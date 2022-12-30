@@ -14,6 +14,7 @@ states = [
 ]
 
 player = "O"
+win = False
 
 class Puzzle(Frame):
 
@@ -23,17 +24,24 @@ class Puzzle(Frame):
         self.master.title("Tic-tac-toe")
         self.createBoard() 
     
-    def check_col(self, array):
-        pass
+    def check_col(self):
+        pass        
     
-    def check_row(self, array):
-        pass
+    def check_row(self):
+        for row in states:
+            print(row)
+            match = all(state == row[0] for state in row)
+            print(match)
+            if match:
+                return True
+        return False
 
-    def check_diag(self, array):
+    def check_diag(self):
         pass
 
     def check_win(self):
-        self.check_col(states)
+        if self.check_col() or self.check_row():
+            print("You win!")
 
     def clicked(self, row, col):
         buttons[row][col].configure(text = player)
