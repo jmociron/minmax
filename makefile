@@ -1,0 +1,2 @@
+gui:
+	python gui.py
