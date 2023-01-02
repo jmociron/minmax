@@ -16,14 +16,15 @@ states = [
 players = ["O", "X"]
 player = players[1]
 
+
 class Puzzle(Frame):
 
     def __init__(self):
 
         Frame.__init__(self)
         self.master.title("Tic-tac-toe")
-        self.createBoard() 
-    
+        self.createBoard()
+
     def check_col(self):
         for i in range(len(states)):
             col = list(map(lambda row: row[i], states))
@@ -33,7 +34,7 @@ class Puzzle(Frame):
                     print(col[0], "wins!")
                     return True
         return False
-        
+
     def check_row(self):
 
         for row in states:
@@ -45,7 +46,7 @@ class Puzzle(Frame):
         return False
 
     def check_diag(self):
-        
+
         left_diag = []
         right_diag = []
 
@@ -73,11 +74,11 @@ class Puzzle(Frame):
 
     def check_win(self):
         self.check_col()
-        # self.check_row()
-        # self.check_diag()
+        self.check_row()
+        self.check_diag()
 
     def clicked(self, row, col):
-        buttons[row][col].configure(text = player)
+        buttons[row][col].configure(text=player)
         states[row][col] = player
         self.check_win()
 
@@ -86,16 +87,18 @@ class Puzzle(Frame):
         for row in range(3):
             for col in range(3):
                 buttons[row][col] = Button(
-                    height = 5,
-                    width = 10,
-                    font = ("Arial Rounded MT Bold", 10),
-                    command = lambda r = row, c = col: self.clicked(r, c)
+                    height=5,
+                    width=10,
+                    font=("Arial Rounded MT Bold", 10),
+                    command=lambda r=row, c=col: self.clicked(r, c)
                 )
-                buttons[row][col].grid(row = row, column = col)
+                buttons[row][col].grid(row=row, column=col)
 
-def startGame(): 
+
+def startGame():
     if __name__ == "__main__":
         root = Puzzle()
         root.mainloop()
+
 
 startGame()
