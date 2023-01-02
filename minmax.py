@@ -6,8 +6,9 @@ current_grid = [
     [None, None, "O"]
 ]
 
-player_state = "X"
 players = ["O", "X"]
+ai_player = players[1]
+human_player = players[0]
 
 def check_col(grid):
     for i in range(len(grid)):
@@ -15,9 +16,12 @@ def check_col(grid):
         if col[0] in players:
             match = all(cell == col[0] for cell in col)
             if match:
-                print(col[0], "wins!")
-                return True
-    return False
+                if col[0] == ai_player:
+                    print("AI wins!")
+                    return 1
+                elif col[0] == human_player:
+                    print("You win!")
+                    return 0
 
 def check_row(grid):
 
@@ -25,9 +29,12 @@ def check_row(grid):
         if row[0] in players:
             match = all(cell == row[0] for cell in row)
             if match:
-                print(row[0], "wins!")
-                return True
-    return False
+                if row[0] == ai_player:
+                    print("AI wins!")
+                    return 1
+                elif row[0] == human_player:
+                    print("You win!")
+                    return 0
 
 def check_diag(grid):
 
@@ -45,16 +52,28 @@ def check_diag(grid):
     if left_diag[0] in players:
         match = all(cell == left_diag[0] for cell in left_diag)
         if match:
-            print(left_diag[0], "wins!")
-            return True
+            if left_diag[0] == ai_player:
+                print("AI wins!")
+                return 1
+            elif left_diag[0] == human_player:
+                print("You win!")
+                return 0
 
     # checks for the right diagonal
     elif right_diag[0] in players:
         match = all(cell == right_diag[0] for cell in right_diag)
         if match:
-            print(right_diag[0], "wins!")
-            return True
-    return False
+            if right_diag[0] == ai_player:
+                print("AI wins!")
+                return 1
+            elif right_diag[0] == human_player:
+                print("You win!")
+                return 0
+    
+def check_win(grid):
+    check_col(grid)
+    check_row(grid)
+    check_diag(grid)
 
 def print_grid(grid):
 
@@ -71,18 +90,31 @@ def generate_moves(grid):
 
     generated_grids = []
 
-    print("\nCurrent grid:")
-    print_grid(grid)
+    # print("\nCurrent grid:")
+    # print_grid(grid)
 
     for i in range(len(grid)):
         for j in range(len(grid)):
             if grid[i][j] is None:
                 new_grid = deepcopy(grid)
-                new_grid[i][j] = player_state
+                new_grid[i][j] = ai_player
                 if new_grid not in generated_grids:
                     generated_grids.append(new_grid)
 
-    print("\nPossible moves for " + player_state + ":")
-    for grid in generated_grids:
-        print_grid(grid)
-generate_moves(current_grid)
+    return generated_grids
+    # print("\nPossible moves for " + player_state + ":")
+    # for grid in generated_grids:
+    #     print_grid(grid)
+
+def calculate_score(all_grids):
+
+    for grid in all_grids:
+        grid_info = {}
+        grid_info["grid"] = grid
+
+        if check_col(grid) or check_row(grid) or check_row(grid):
+            pass
+
+    pass
+
+generated_grids = generate_moves(current_grid)

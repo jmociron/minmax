@@ -1,4 +1,5 @@
 from minmax import *
+from minmax import human_player
 from tkinter import *
 from tkinter import messagebox
 
@@ -14,10 +15,6 @@ grid = [
     [None, None, None]
 ]
 
-players = ["O", "X"]
-player = players[1]
-
-
 class Puzzle(Frame):
 
     def __init__(self):
@@ -25,15 +22,10 @@ class Puzzle(Frame):
         self.master.title("Tic-tac-toe")
         self.createBoard()
 
-    def check_win(self):
-        check_col(grid)
-        check_row(grid)
-        check_diag(grid)
-
     def clicked(self, row, col):
-        buttons[row][col].configure(text=player)
-        grid[row][col] = player
-        self.check_win()
+        buttons[row][col].configure(text = human_player)
+        grid[row][col] = human_player
+        check_win(grid)
 
     def createBoard(self):
 
