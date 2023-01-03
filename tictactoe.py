@@ -1,7 +1,4 @@
-# References:
-# itertools - https://docs.python.org/3/library/itertools.html
-
-from copy import *
+from minmax import *
 from tkinter import *
 from tkinter import messagebox
 
@@ -18,14 +15,11 @@ grid = [
 ]
 
 human_player = None
+human_turn = True
 ai_player = None
 players = ["O", "X"]
 
-def check_draw(grid):
-    for row in grid:
-        if None in row:
-            return False
-    return True
+# TIC-TAC-TOE LOGIC
 
 def check_col(grid):
 
@@ -94,54 +88,24 @@ def check_diag(grid):
 
 def check_win(grid):
 
-    # checks if either player has won:
-        # AI = 1
-        # human = -1
-        # neither (or draw) = 0
+    # AI = 1
+    # human = -1
+    # neither (or draw) = 0
 
-    if not check_draw(grid):
-        check_col(grid)
-        check_row(grid)
-        check_diag(grid)
+    col_value = check_col(grid)
+    row_value = check_row(grid)
+    diag_value = check_diag(grid)
 
-def print_grid(grid):
+    if col_value != 0:
+        return col_value
+    elif row_value != 0:
+        return row_value
+    elif diag_value != 0:
+        return diag_value
 
-    for i in range(len(grid)):
-        for j in range(len(grid)):
-            if grid[i][j] is None:
-                print("|", " ", end=" ")
-            else:
-                print("|", grid[i][j], end=" ")
-        print("|")
-    print("\n")
+    return 0
 
-def generate_moves(grid):
-
-    generated_grids = []
-
-    # print("\nCurrent grid:")
-    # print_grid(grid)
-
-    for i in range(len(grid)):
-        for j in range(len(grid)):
-            if grid[i][j] is None:
-                new_grid = deepcopy(grid)
-                new_grid[i][j] = ai_player
-                if new_grid not in generated_grids:
-                    generated_grids.append(new_grid)
-
-    return generated_grids
-
-def calculate_score(all_grids):
-
-    for grid in all_grids:
-        grid_info = {}
-        grid_info["grid"] = grid
-
-        # if check_col(grid) or check_row(grid) or check_row(grid):
-        #     pass
-
-    pass
+# GUI
 
 class grid_frame(Frame):
 
@@ -151,19 +115,28 @@ class grid_frame(Frame):
         self.create_board()
 
     def clicked(self, row, col):
-
+        global human_turn
         buttons[row][col].configure(text = human_player)
         grid[row][col] = human_player
+        human_turn = False
+
+        print("\nYour move:")
+        print_grid(grid)
+        # generate_moves(grid, ai_player)
         check_win(grid)
+    
+    def refresh_frame(self):
+        for item in self.mainFrame.winfo_children():
+            item.destroy()
 
     def create_board(self):
 
         for row in range(3):
             for col in range(3):
                 buttons[row][col] = Button(
-                    height=5,
-                    width=10,
-                    font=("Arial Rounded MT Bold", 10),
+                    height=2,
+                    width=5,
+                    font=("Arial Rounded MT Bold", 35),
                     command=lambda r=row, c=col: self.clicked(r, c)
                 )
                 buttons[row][col].grid(row=row, column=col)

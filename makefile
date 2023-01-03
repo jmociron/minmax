@@ -1,2 +1,4 @@
 run:
-	python exer10.py
+	python tictactoe.py
+algo:
+	python minmax.py
