@@ -165,10 +165,10 @@ class start_frame(Frame):
 
     def player_prompt(self):
         
-        text = Label(self, text = "Select your player:", height = 3)
-        x_btn = Button(self, text = "X", command = lambda:self.set_human("X"))
-        exit_btn = Button(self, text = "Exit")
-        o_btn = Button(self, text = "O", command = lambda:self.set_human("O"))
+        text = Label(self, text = "Select your player:", height = 3, font=("Arial Rounded MT Bold", 12))
+        x_btn = Button(self, text = "X", font=("Arial Rounded MT Bold", 12), command = lambda:self.set_human("X"))
+        exit_btn = Button(self, text = "Exit", font=("Arial Rounded MT Bold", 12), command = lambda:self.quit())
+        o_btn = Button(self, text = "O", font=("Arial Rounded MT Bold", 12), command = lambda:self.set_human("O"))
         
         text.pack()
         x_btn.pack(side = LEFT)
