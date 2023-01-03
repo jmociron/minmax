@@ -1,4 +1,2 @@
-gui:
-	python gui.py
-algo:
-	python minmax.py
+run:
+	python exer10.py
