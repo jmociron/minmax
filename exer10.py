@@ -27,10 +27,10 @@ def check_col(grid):
             match = all(cell == col[0] for cell in col)
             if match:
                 if col[0] == ai_player:
-                    print("AI wins!")
+                    ai_wins()
                     return 1
                 elif col[0] == human_player:
-                    print("You win!")
+                    human_wins()
                     return -1
     return 0
     
@@ -41,10 +41,10 @@ def check_row(grid):
             match = all(cell == row[0] for cell in row)
             if match:
                 if row[0] == ai_player:
-                    print("AI wins!")
+                    ai_wins()
                     return 1
                 elif row[0] == human_player:
-                    print("You win!")
+                    human_wins()
                     return -1
     return 0
     
@@ -59,30 +59,40 @@ def check_diag(grid):
         for j in range(len(grid)):
             if i+j == len(grid)-1:
                 right_diag.append(grid[i][j])
-
+    
     # checks for the left diagonal
     if left_diag[0] in players:
+
         match = all(cell == left_diag[0] for cell in left_diag)
         if match:
             if left_diag[0] == ai_player:
-                print("AI wins!")
+                ai_wins()
                 return 1
             elif left_diag[0] == human_player:
-                print("You win!")
+                human_wins()
                 return -1
 
     # checks for the right diagonal
-    elif right_diag[0] in players:
+    if right_diag[0] in players:
+        print("Hello")
         match = all(cell == right_diag[0] for cell in right_diag)
         if match:
             if right_diag[0] == ai_player:
-                print("AI wins!")
+                ai_wins()
                 return 1
             elif right_diag[0] == human_player:
-                print("You win!")
+                human_wins()
                 return -1
     
     return 0
+
+def human_wins():
+    print("You win!")
+    messagebox.showinfo("Game over!", "You win!")
+
+def ai_wins():
+    print("AI wins!")
+    messagebox.showinfo("Game over!", "AI wins!")
 
 def check_win(grid):
 
