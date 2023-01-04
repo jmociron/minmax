@@ -132,34 +132,6 @@ def print_grid(grid):
         print("|")
     print("\n")
 
-def generate_actions(grid):
-
-    generated_grids = []   
-
-    if human_turn:
-        current_state = human_player
-    else: 
-        current_state = ai_player
-
-    empty_cells = 0
-    for row in grid:
-        empty_cells += sum(cell is None for cell in row)
-
-    for e in range(empty_cells):
-        for i in range(len(grid)):
-            for j in range(len(grid)):
-                if grid[i][j] is None:
-                    new_grid = deepcopy(grid)
-                    new_grid[i][j] = current_state
-                    if new_grid not in generated_grids:
-                        generated_grids.append(new_grid)
-    
-    # print("\nGenerated grids:")
-    # for grid in generated_grids:
-    #     print_grid(grid)
-    
-    return generated_grids
-
 def minimax(current_grid, ai_turn):
     
     current_ai_turn = ai_turn
@@ -173,11 +145,11 @@ def minimax(current_grid, ai_turn):
         best_move["utility"] = -inf
     else:
         best_move["utility"] = +inf
-
-    if check_terminal(current_grid):
+    
+    if check_win(current_grid) != 0 or check_terminal(current_grid):
         best_move["utility"] = check_win(current_grid)
         return best_move
-    
+
     for i in range(len(current_grid)):
         for j in range(len(current_grid)):
             if current_grid[i][j] is None:
@@ -195,7 +167,7 @@ def minimax(current_grid, ai_turn):
 
                 if ai_turn:
                     if value["utility"] > best_move["utility"]:
-                        best_move = value
+                        best_move = value                        
                 else:
                     if value["utility"] < best_move["utility"]:
                         best_move = value
@@ -219,11 +191,11 @@ class grid_frame(Frame):
 
     def clicked(self, row, col):
 
-        if not check_win(grid):
+        if not check_win(grid) and not check_terminal(grid):
             current_player = human_player
             buttons[row][col].configure(text = current_player, disabledforeground="blue", state = DISABLED)
             grid[row][col] = current_player   
-            if not check_win(grid):       
+            if not check_win(grid) and not check_terminal(grid):      
                 self.ai_turn()
 
     def create_board(self):
