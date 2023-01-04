@@ -1,4 +1,5 @@
 from copy import *
+from math import inf
 from tkinter import *
 from tkinter import messagebox
 
@@ -15,6 +16,7 @@ grid = [
 ]
 
 human_turn = None
+ai_turn = True
 human_player = None
 ai_player = None
 players = ["X", "O"]
@@ -27,10 +29,10 @@ def check_col(grid):
             match = all(cell == col[0] for cell in col)
             if match:
                 if col[0] == ai_player:
-                    ai_wins()
+                    # ai_wins()
                     return 1
                 elif col[0] == human_player:
-                    human_wins()
+                    # human_wins()
                     return -1
     return 0
     
@@ -41,10 +43,10 @@ def check_row(grid):
             match = all(cell == row[0] for cell in row)
             if match:
                 if row[0] == ai_player:
-                    ai_wins()
+                    # ai_wins()
                     return 1
                 elif row[0] == human_player:
-                    human_wins()
+                    # human_wins()
                     return -1
     return 0
     
@@ -67,10 +69,10 @@ def check_diag(grid):
         match = all(cell == left_diag[0] for cell in left_diag)
         if match:
             if left_diag[0] == ai_player:
-                ai_wins()
+                # ai_wins()
                 return 1
             elif left_diag[0] == human_player:
-                human_wins()
+                # human_wins()
                 return -1
 
     # checks for the right diagonal
@@ -78,10 +80,10 @@ def check_diag(grid):
         match = all(cell == right_diag[0] for cell in right_diag)
         if match:
             if right_diag[0] == ai_player:
-                ai_wins()
+                # ai_wins()
                 return 1
             elif right_diag[0] == human_player:
-                human_wins()
+                # human_wins()
                 return -1
     
     return 0
@@ -152,9 +154,54 @@ def generate_actions(grid):
                     if new_grid not in generated_grids:
                         generated_grids.append(new_grid)
     
-    print("\nGenerated grids:")
-    for grid in generated_grids:
-        print_grid(grid)
+    # print("\nGenerated grids:")
+    # for grid in generated_grids:
+    #     print_grid(grid)
+    
+    return generated_grids
+
+def minimax(current_grid, ai_turn):
+    
+    current_ai_turn = ai_turn
+    best_move = {
+        "x": None,
+        "y": None,
+        "utility": None,
+    }
+
+    if ai_turn:
+        best_move["utility"] = -inf
+    else:
+        best_move["utility"] = +inf
+
+    if check_terminal(current_grid):
+        best_move["utility"] = check_win(current_grid)
+        return best_move
+    
+    for i in range(len(current_grid)):
+        for j in range(len(current_grid)):
+            if current_grid[i][j] is None:
+
+                temp_grid = deepcopy(current_grid)
+
+                if ai_turn:
+                    temp_grid[i][j] = ai_player 
+                else:
+                    temp_grid[i][j] = human_player 
+
+                value = minimax(temp_grid, not current_ai_turn)
+                value["x"] = i
+                value["y"] = j
+
+                if ai_turn:
+                    if value["utility"] > best_move["utility"]:
+                        best_move = value
+                else:
+                    if value["utility"] < best_move["utility"]:
+                        best_move = value
+    
+    return best_move
+
 
 class grid_frame(Frame):
 
@@ -162,6 +209,14 @@ class grid_frame(Frame):
         Frame.__init__(self)
         self.master.title("Tic-tac-toe")
         self.create_board()
+    
+    def ai_turn(self):
+        current_player = ai_player
+        best_move = minimax(grid, True)
+        x = best_move["x"]
+        y = best_move["y"]
+        buttons[x][y].configure(text = current_player, disabledforeground="red", state = DISABLED)
+        grid[x][y] = ai_player
 
     def clicked(self, row, col):
 
@@ -170,18 +225,11 @@ class grid_frame(Frame):
         if human_turn:
             current_player = human_player
             buttons[row][col].configure(text = current_player, disabledforeground="blue", state = DISABLED)
-
-        else:
-            current_player = ai_player
-            buttons[row][col].configure(text = current_player, disabledforeground="red", state = DISABLED)
-
-        grid[row][col] = current_player
+            grid[row][col] = current_player
+            self.ai_turn()
     
         human_turn = not human_turn
-        check_win(grid)
-
-        if not human_turn:
-            generate_actions(grid)
+        check_win(grid)           
 
     def create_board(self):
 
@@ -194,6 +242,9 @@ class grid_frame(Frame):
                     command=lambda r=row, c=col: self.clicked(r, c)
                 )
                 buttons[row][col].grid(row=row, column=col)
+        
+        if not human_turn:
+            self.ai_turn()
 
 class start_frame(Frame):
     def __init__(self):
@@ -205,14 +256,16 @@ class start_frame(Frame):
 
         global human_player, ai_player, human_turn
         human_player = state
-        print("You are playing as", human_player)
-
+        
         if human_player == "O":
             ai_player = "X"
             human_turn = False
         else:
             ai_player = "O"
             human_turn = True
+        
+        print("\nYou are:", human_player)
+        print("AI is:", ai_player)
 
         self.destroy()
         root = grid_frame()
@@ -232,7 +285,6 @@ class start_frame(Frame):
 
 def start_game():
     if __name__ == "__main__":
-
         start = start_frame()
         start.pack(padx = 50, pady = 10)
         start.mainloop()    
