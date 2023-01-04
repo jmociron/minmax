@@ -90,6 +90,9 @@ def check_win(grid):
     # human = -1
     # neither (or draw) = 0
 
+    print("Human player:", human_player)
+    print("AI player:", ai_player)
+
     col_value = check_col(grid)
     row_value = check_row(grid)
     diag_value = check_diag(grid)
@@ -119,7 +122,7 @@ class grid_frame(Frame):
             current_player = ai_player
 
         buttons[row][col].configure(text = current_player)
-        grid[row][col] = human_player
+        grid[row][col] = current_player
     
         human_turn = not human_turn
         check_win(grid)
