@@ -202,7 +202,6 @@ def minimax(current_grid, ai_turn):
     
     return best_move
 
-
 class grid_frame(Frame):
 
     def __init__(self):
@@ -220,16 +219,12 @@ class grid_frame(Frame):
 
     def clicked(self, row, col):
 
-        global human_turn
-
-        if human_turn:
+        if not check_win(grid):
             current_player = human_player
             buttons[row][col].configure(text = current_player, disabledforeground="blue", state = DISABLED)
-            grid[row][col] = current_player
-            self.ai_turn()
-    
-        human_turn = not human_turn
-        check_win(grid)           
+            grid[row][col] = current_player   
+            if not check_win(grid):       
+                self.ai_turn()
 
     def create_board(self):
 
