@@ -14,12 +14,10 @@ grid = [
     [None, None, None]
 ]
 
+human_turn = None
 human_player = None
-human_turn = True
 ai_player = None
-players = ["O", "X"]
-
-# TIC-TAC-TOE LOGIC
+players = ["X", "O"]
 
 def check_col(grid):
 
@@ -105,8 +103,6 @@ def check_win(grid):
 
     return 0
 
-# GUI
-
 class grid_frame(Frame):
 
     def __init__(self):
@@ -116,13 +112,16 @@ class grid_frame(Frame):
 
     def clicked(self, row, col):
         global human_turn
-        buttons[row][col].configure(text = human_player)
-        grid[row][col] = human_player
-        human_turn = False
 
-        # print("\nYour move:")
-        # print_grid(grid)
-        # generate_moves(grid, ai_player)
+        if human_turn:
+            current_player = human_player
+        else:
+            current_player = ai_player
+
+        buttons[row][col].configure(text = current_player)
+        grid[row][col] = human_player
+    
+        human_turn = not human_turn
         check_win(grid)
     
     def refresh_frame(self):
@@ -149,15 +148,16 @@ class start_frame(Frame):
 
     def set_human(self, state):
 
-        global human_player, ai_player
+        global human_player, ai_player, human_turn
         human_player = state
         print("You are playing as", human_player)
 
         if human_player == "O":
             ai_player = "X"
+            human_turn = False
         else:
             ai_player = "O"
-
+            human_turn = True
 
         self.destroy()
         root = grid_frame()
