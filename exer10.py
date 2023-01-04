@@ -1,4 +1,4 @@
-# from minmax import *
+from copy import *
 from tkinter import *
 from tkinter import messagebox
 
@@ -60,6 +60,7 @@ def check_diag(grid):
             if i+j == len(grid)-1:
                 right_diag.append(grid[i][j])
     
+
     # checks for the left diagonal
     if left_diag[0] in players:
 
@@ -74,7 +75,6 @@ def check_diag(grid):
 
     # checks for the right diagonal
     if right_diag[0] in players:
-        print("Hello")
         match = all(cell == right_diag[0] for cell in right_diag)
         if match:
             if right_diag[0] == ai_player:
@@ -119,6 +119,43 @@ def check_terminal(grid):
             return False
     return True
 
+def print_grid(grid):
+
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if grid[i][j] is None:
+                print("|", " ", end=" ")
+            else:
+                print("|", grid[i][j], end=" ")
+        print("|")
+    print("\n")
+
+def generate_actions(grid):
+
+    generated_grids = []   
+
+    if human_turn:
+        current_state = human_player
+    else: 
+        current_state = ai_player
+
+    empty_cells = 0
+    for row in grid:
+        empty_cells += sum(cell is None for cell in row)
+
+    for e in range(empty_cells):
+        for i in range(len(grid)):
+            for j in range(len(grid)):
+                if grid[i][j] is None:
+                    new_grid = deepcopy(grid)
+                    new_grid[i][j] = current_state
+                    if new_grid not in generated_grids:
+                        generated_grids.append(new_grid)
+    
+    print("\nGenerated grids:")
+    for grid in generated_grids:
+        print_grid(grid)
+
 class grid_frame(Frame):
 
     def __init__(self):
@@ -132,14 +169,19 @@ class grid_frame(Frame):
 
         if human_turn:
             current_player = human_player
+            buttons[row][col].configure(text = current_player, disabledforeground="blue", state = DISABLED)
+
         else:
             current_player = ai_player
+            buttons[row][col].configure(text = current_player, disabledforeground="red", state = DISABLED)
 
-        buttons[row][col].configure(text = current_player, state = DISABLED)
         grid[row][col] = current_player
     
         human_turn = not human_turn
         check_win(grid)
+
+        if not human_turn:
+            generate_actions(grid)
 
     def create_board(self):
 
