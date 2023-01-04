@@ -90,9 +90,6 @@ def check_win(grid):
     # human = -1
     # neither (or draw) = 0
 
-    print("Human player:", human_player)
-    print("AI player:", ai_player)
-
     col_value = check_col(grid)
     row_value = check_row(grid)
     diag_value = check_diag(grid)
@@ -106,6 +103,12 @@ def check_win(grid):
 
     return 0
 
+def check_terminal(grid):
+    for row in grid:
+        if None in row:
+            return False
+    return True
+
 class grid_frame(Frame):
 
     def __init__(self):
@@ -114,6 +117,7 @@ class grid_frame(Frame):
         self.create_board()
 
     def clicked(self, row, col):
+
         global human_turn
 
         if human_turn:
@@ -121,15 +125,11 @@ class grid_frame(Frame):
         else:
             current_player = ai_player
 
-        buttons[row][col].configure(text = current_player)
+        buttons[row][col].configure(text = current_player, state = DISABLED)
         grid[row][col] = current_player
     
         human_turn = not human_turn
         check_win(grid)
-    
-    def refresh_frame(self):
-        for item in self.mainFrame.winfo_children():
-            item.destroy()
 
     def create_board(self):
 
