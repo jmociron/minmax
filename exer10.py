@@ -94,6 +94,11 @@ def ai_wins():
     print("AI wins!")
     messagebox.showinfo("Game over!", "AI wins!")
 
+# shows a messagebox for when ai wins
+def player_draw():
+    print("Draw!")
+    messagebox.showinfo("Game over!", "Draw!")
+
 # checks if board has any winning condition
 def check_win(grid):
 
@@ -113,6 +118,17 @@ def check_win(grid):
         return diag_value
 
     return 0
+
+def display_win(grid):
+
+    win = check_win(grid)
+
+    if win == 1:
+        ai_wins()
+    elif win == -1:
+        human_wins()
+    elif win == 0 and check_terminal(grid):
+        player_draw()
 
 # checks if the board is full (terminal node)
 def check_terminal(grid):
@@ -225,8 +241,10 @@ class grid_frame(Frame):
             buttons[row][col].configure(
                 text=current_player, disabledforeground="blue", state=DISABLED)
             game_grid[row][col] = current_player
+            display_win(game_grid)
             if not check_win(game_grid) and not check_terminal(game_grid):
                 self.ai_turn()
+                display_win(game_grid)
 
     def create_board(self):
 
@@ -286,12 +304,10 @@ class start_frame(Frame):
         exit_btn.pack(side=RIGHT)
         o_btn.pack(pady=5)
 
-
 def start_game():
     if __name__ == "__main__":
         start = start_frame()
         start.pack(padx=50, pady=10)
         start.mainloop()
-
 
 start_game()
