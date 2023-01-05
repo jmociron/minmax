@@ -1,5 +1,6 @@
 from copy import *
-from math import inf
+from math import *
+from random import *
 from tkinter import *
 from tkinter import messagebox
 
@@ -226,6 +227,20 @@ class grid_frame(Frame):
         Frame.__init__(self)
         self.master.title("Tic-tac-toe")
         self.create_board()
+    
+    def ai_random_turn(self):
+
+        # for testing the algorithm, the ai can be assigned a random first move
+
+        coordinates = [0, 1, 2]
+        current_player = ai_player # sets the current player as the ai
+        x = choice(coordinates)
+        y = choice(coordinates)
+
+        # updates the GUI and the grid list
+        buttons[x][y].configure(text=current_player,
+                                disabledforeground="red", state=DISABLED)
+        game_grid[x][y] = ai_player
 
     def ai_turn(self):
         current_player = ai_player # sets the current player as the ai
@@ -276,7 +291,8 @@ class grid_frame(Frame):
 
         # if ai is "X", ai will be called to generate a move
         if not human_turn:
-            self.ai_turn()
+            # self.ai_turn()
+            self.ai_random_turn()
 
 # holds the starting prompt for player to pick between "X" and "O"
 class start_frame(Frame):
@@ -307,14 +323,16 @@ class start_frame(Frame):
 
     def player_prompt(self):
 
+        font_style = "Verdana"
+
         text = Label(self, text="Select your player:", height=3,
-                     font=("Arial Rounded MT Bold", 12))
+                     font=(font_style, 12))
         x_btn = Button(self, text="X", font=(
-            "Arial Rounded MT Bold", 12), command=lambda: self.set_human("X"))
+            font_style, 12), command=lambda: self.set_human("X"))
         exit_btn = Button(self, text="Exit", font=(
-            "Arial Rounded MT Bold", 12), command=lambda: self.quit())
+            font_style, 12), command=lambda: self.quit())
         o_btn = Button(self, text="O", font=(
-            "Arial Rounded MT Bold", 12), command=lambda: self.set_human("O"))
+            font_style, 12), command=lambda: self.set_human("O"))
 
         text.pack()
         x_btn.pack(side=LEFT)
