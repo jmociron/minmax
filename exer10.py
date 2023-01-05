@@ -119,6 +119,7 @@ def check_win(grid):
 
     return 0
 
+# displays message box if win or draw is detected
 def display_win(grid):
 
     win = check_win(grid)
