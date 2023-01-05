@@ -132,7 +132,7 @@ def print_grid(grid):
         print("|")
     print("\n")
 
-def minimax(current_grid, ai_turn):
+def minimax(current_grid, ai_turn, alpha, beta):
     
     current_ai_turn = ai_turn
     best_move = {
@@ -161,16 +161,34 @@ def minimax(current_grid, ai_turn):
                 else:
                     temp_grid[i][j] = human_player 
 
-                value = minimax(temp_grid, not current_ai_turn)
+                # v = value(s, a, b)
+                value = minimax(temp_grid, not current_ai_turn, alpha, beta)
                 value["x"] = i
                 value["y"] = j
 
+                # maxValue(s, a, b) 
                 if ai_turn:
+                    # m = max(m,v)
                     if value["utility"] > best_move["utility"]:
-                        best_move = value                        
+                        best_move = value
+                    # if v >= b: return m
+                    if value["utility"] >= beta:
+                        return best_move
+                    # a = max(a, m)
+                    if value["utility"] > alpha:
+                        alpha = best_move["utility"]        
+
+                # minNode(s, a, b)
                 else:
+                    # m = min(m, v)
                     if value["utility"] < best_move["utility"]:
                         best_move = value
+                    # if v <= a
+                    if value["utility"] <= alpha:
+                        return best_move
+                    # b = min(b, m)
+                    if value["utility"] < beta:
+                        beta = best_move["utility"]
     
     return best_move
 
@@ -183,7 +201,7 @@ class grid_frame(Frame):
     
     def ai_turn(self):
         current_player = ai_player
-        best_move = minimax(grid, True)
+        best_move = minimax(grid, True, -inf, +inf)
         x = best_move["x"]
         y = best_move["y"]
         buttons[x][y].configure(text = current_player, disabledforeground="red", state = DISABLED)
