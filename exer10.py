@@ -181,6 +181,7 @@ def minimax(current_grid, ai_turn, alpha, beta):
                 # creates a copy of the grid with the move generated
                 temp_grid = deepcopy(current_grid)
 
+                # adds the generated move to the temporary grid
                 if ai_turn:
                     temp_grid[i][j] = ai_player
                 else:
@@ -226,28 +227,42 @@ class grid_frame(Frame):
         self.create_board()
 
     def ai_turn(self):
-        current_player = ai_player
-        best_move = minimax(game_grid, True, -inf, +inf)
+        current_player = ai_player # sets the current player as the ai
+        best_move = minimax(game_grid, True, alpha = -inf, beta = +inf)
+        
+        # retrieves the coordinates returned by minimax
         x = best_move["x"]
         y = best_move["y"]
+
+        # updates the GUI and the grid list
         buttons[x][y].configure(text=current_player,
                                 disabledforeground="red", state=DISABLED)
         game_grid[x][y] = ai_player
 
     def clicked(self, row, col):
 
+        # checks if grid is still playable before allowing clicks
         if not check_win(game_grid) and not check_terminal(game_grid):
-            current_player = human_player
+            
+            current_player = human_player # sets the current player as the human
+            
+            # updates the GUI and the grid list
             buttons[row][col].configure(
                 text=current_player, disabledforeground="blue", state=DISABLED)
             game_grid[row][col] = current_player
-            display_win(game_grid)
+            
+            display_win(game_grid) # displays prompt if win is detected
+
+            # checks if grid is still playable before allowing clicks
             if not check_win(game_grid) and not check_terminal(game_grid):
-                self.ai_turn()
-                display_win(game_grid)
+                
+                current_player = ai_player # sets the current player as the ai                
+                self.ai_turn() # after human, ai will generate a move
+                display_win(game_grid) # displays prompt if win is detected
 
     def create_board(self):
 
+        # generates an empty, clickable button in a 3x3 grid format
         for row in range(3):
             for col in range(3):
                 buttons[row][col] = Button(
@@ -258,6 +273,7 @@ class grid_frame(Frame):
                 )
                 buttons[row][col].grid(row=row, column=col)
 
+        # if ai is "X", ai will be called to generate a move
         if not human_turn:
             self.ai_turn()
 
